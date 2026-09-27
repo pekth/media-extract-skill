@@ -60,6 +60,23 @@ All yt-dlp operations use `--ignore-config --no-exec` to prevent local settings
 from launching a player or running hooks. Pass arguments as an array in scripts;
 never interpolate a URL into executable shell text.
 
+## Save progress before analysis
+
+For long media or multiple sources, keep one local receipt per source in the
+task's output directory, outside repositories. Write it before reading or
+summarizing the transcript:
+
+- After the metadata probe, save only the source ID, title, creator, date,
+  duration, and available caption language names. Do not copy raw metadata,
+  subtitle track objects, signed URLs, credentials, or private configuration.
+- After extraction, record the method, selected language, caption provenance,
+  artifact filenames and sizes, and whether extraction succeeded. Verify the
+  files before marking extraction complete. Track analysis status separately.
+- On interruption or reporting timeout, read the receipt and validate the saved
+  artifacts first. Resume analysis from usable files without fetching again.
+  Mark missing or incomplete evidence explicitly; a reporting timeout does not
+  mean extraction failed. Existing retry and stop conditions still apply.
+
 ## Captions first
 
 Choose a language present in the metadata. Prefer creator captions; identify
