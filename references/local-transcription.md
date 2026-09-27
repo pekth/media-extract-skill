@@ -27,7 +27,8 @@ Then run the helper with that environment's Python and the cached directory:
 "<environment-python>" scripts/transcribe.py "<local-media>" --model "<model-directory>" --language en > "<temporary-directory>/transcript.json"
 ```
 
-The helper selects CPU INT8 for portability and passes `local_files_only=True`.
+The helper selects GPU float16 when CUDA is available, falls back to CPU INT8
+otherwise, and passes `local_files_only=True`.
 It does not use an API key, select a cloud backend, download a model during
 transcription, or open a player. It is not a network sandbox for arbitrary media
 or dependencies. Process only authorized files with current decoder packages.

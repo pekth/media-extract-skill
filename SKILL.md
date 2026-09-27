@@ -88,8 +88,11 @@ ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name
 If retrieval is within scope, download only the audio needed for speech:
 
 ```bash
-yt-dlp --ignore-config --no-exec --no-cache-dir --retries 0 --extractor-retries 0 --socket-timeout 20 --no-playlist -f bestaudio/best --extract-audio --audio-format wav --paths "<output-directory>" --output "%(id)s.%(ext)s" "<url>"
+yt-dlp --ignore-config --no-exec --no-cache-dir --retries 0 --extractor-retries 0 --socket-timeout 20 --no-playlist -f bestaudio/best --paths "<output-directory>" --output "%(id)s.%(ext)s" "<url>"
 ```
+
+No conversion pass is needed: the transcription helper decodes any
+ffmpeg-readable file directly.
 
 Use a reviewed, locally cached Faster Whisper model directory. The helper does
 not download a model or call a transcription API:
