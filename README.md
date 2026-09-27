@@ -4,15 +4,26 @@ An agent skill for reading media without opening a browser or playing it.
 Uses yt-dlp for public URLs, FFmpeg for inspection and still frames, and a small
 Faster Whisper helper for local speech transcription.
 
+## ⚡ TL;DR
+
+- **Zero Playback & No Browser**: Never opens browsers, embeds, or media players. Analyzes public media and local files strictly through CLI tools.
+- **Captions First**: Fetches existing creator subtitles or auto-generated captions first via `yt-dlp` without downloading audio or video streams.
+- **Offline Local Speech Transcription**: When captions are missing, transcribes authorized local audio/video with offline Faster Whisper (CPU INT8, timestamped JSON) without calling cloud transcription APIs.
+- **Visual Evidence via Still Frames**: Extracts bounded, timestamp-targeted still frames using FFmpeg instead of streaming video.
+- **Strict Guardrails**: Halts immediately on login walls, bot checks, or rate limits. Never scrapes feeds, imports browser cookies, or bypasses access controls.
+
 ## Install
 
 ```bash
-git clone --branch feat/cli-media-extraction --single-branch https://github.com/pekth/media-extract-skill.git
-npx skills add ./media-extract-skill --skill media-extract
+npx skills add pekth/media-extract-skill
 ```
 
-The initial skill is on the review branch above. After it merges into `main`,
-install directly with `npx skills add pekth/media-extract-skill`.
+Or install from a local clone:
+
+```bash
+git clone https://github.com/pekth/media-extract-skill.git
+npx skills add ./media-extract-skill --skill media-extract
+```
 
 The skill needs the tools for the requested operation. Installing the skill
 does not install yt-dlp, FFmpeg, Python dependencies, or speech models. Follow
