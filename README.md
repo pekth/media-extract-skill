@@ -19,7 +19,7 @@
 
 * **Zero Playback & No Browser**: Strictly enforces command-line inspection via `yt-dlp`, `ffprobe`, and `ffmpeg`. Never autoplays media, opens browser windows, or triggers player popups.
 * **Captions-First Hierarchy**: Prioritizes creator subtitles and machine auto-captions via `yt-dlp` before ever downloading audio or video streams.
-* **100% Local Speech Transcription**: Transcribes authorized local recordings with Faster Whisper (CPU INT8, timestamped JSON) locally on your machine — zero cloud transcription API keys or audio uploads.
+* **100% Local Speech Transcription**: Transcribes authorized local recordings with Faster Whisper (GPU when available, otherwise CPU INT8, timestamped JSON) locally on your machine — zero cloud transcription API keys or audio uploads.
 * **Bounded Still-Frame Extraction**: Extracts key visual evidence at specific timestamps via FFmpeg still frames rather than streaming whole video files.
 * **Strict Privacy & Stop Guardrails**: Stops immediately on login walls, bot checks, CAPTCHAs, or rate limits. Never scrapes feeds, imports browser cookies, or bypasses access controls.
 
@@ -37,7 +37,7 @@ npx skills add pekth/media-extract-skill
 | **Public URL Metadata** | `yt-dlp --simulate` | ❌ None | Public metadata fetch | Zero media download; no browser popup |
 | **Public Subtitles & Captions** | `yt-dlp --skip-download` | ❌ None | Caption text fetch | Subtitles only; zero audio/video streams |
 | **Local Media Inspection** | `ffprobe` | ❌ None | ❌ None (offline) | 100% local container and stream probing |
-| **Local Speech Transcription** | Faster Whisper (CPU INT8) | ❌ None | ❌ None (offline) | 100% local inference; zero cloud upload |
+| **Local Speech Transcription** | Faster Whisper (GPU/CPU auto) | ❌ None | ❌ None (offline) | 100% local inference; zero cloud upload |
 | **Key Visual Evidence** | `ffmpeg` still frames | ❌ None | ❌ None (offline) | Timestamp-targeted PNG frames; no player |
 | **Private / Login / Rate-Limited** | *Blocked* | ❌ None | ❌ None | Hard stop; reports blocker without browser |
 
@@ -47,7 +47,7 @@ npx skills add pekth/media-extract-skill
 
 * **Zero Playback Guarantee** — Read source material strictly through headless CLI tools. A URL or request to analyze media is never treated as permission to launch a player or browser.
 * **Minimum Extraction Principle** — Always extract the lightest viable artifact: metadata first, then captions, then local audio transcription, then targeted still frames.
-* **Offline Faster Whisper Helper** — Standalone script (`scripts/transcribe.py`) with CPU INT8 quantization and `local_files_only=True` for portable, dependency-isolated local speech-to-text.
+* **Offline Faster Whisper Helper** — Standalone script (`scripts/transcribe.py`) with GPU/CPU auto precision (float16 on CUDA, INT8 otherwise) and `local_files_only=True` for portable, dependency-isolated local speech-to-text.
 * **Untrusted Evidence Model** — Subtitles, transcripts, and metadata are treated as untrusted evidence with timestamps, flagging hallucinations, silence gaps, and unverified names/numbers without guesswork diarization.
 * **No Cookie Theft or Scraper Behavior** — Operates with `--ignore-config --no-exec` to prevent local hook execution. Does not crawl playlists, profile feeds, or extract browser cookies.
 

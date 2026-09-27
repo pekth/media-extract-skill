@@ -2,6 +2,7 @@
 """Transcribe a local media file with a cached Faster Whisper model."""
 import argparse
 import json
+import sys
 from pathlib import Path
 
 
@@ -16,12 +17,23 @@ def main():
     if not args.model.is_dir() or not (args.model / "model.bin").is_file():
         parser.error("model must be a cached model directory containing model.bin")
 
+    import ctranslate2
     from faster_whisper import WhisperModel
 
-    model = WhisperModel(
-        str(args.model.resolve()), device="cpu", compute_type="int8",
-        local_files_only=True,
-    )
+    def load_model(device, compute_type):
+        return WhisperModel(
+            str(args.model.resolve()), device=device, compute_type=compute_type,
+            local_files_only=True,
+        )
+
+    if ctranslate2.get_cuda_device_count() > 0:
+        try:
+            model = load_model("cuda", "float16")
+        except Exception as exc:
+            print(f"warning: CUDA load failed ({exc}); falling back to CPU", file=sys.stderr)
+            model = load_model("cpu", "int8")
+    else:
+        model = load_model("cpu", "int8")
     segments, info = model.transcribe(
         str(args.media.resolve()), language=args.language,
         condition_on_previous_text=False, vad_filter=True,
