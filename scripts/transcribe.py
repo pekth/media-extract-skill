@@ -20,32 +20,32 @@ def main():
     import ctranslate2
     from faster_whisper import WhisperModel
 
-    def load_model(device, compute_type):
-        return WhisperModel(
+    def transcribe(device, compute_type):
+        model = WhisperModel(
             str(args.model.resolve()), device=device, compute_type=compute_type,
             local_files_only=True,
         )
+        segments, info = model.transcribe(
+            str(args.media.resolve()), language=args.language,
+            condition_on_previous_text=False, vad_filter=True,
+        )
+        return {
+            "method": "local-asr",
+            "language": info.language,
+            "segments": [
+                {"start": segment.start, "end": segment.end, "text": segment.text.strip()}
+                for segment in segments
+            ],
+        }
 
     if ctranslate2.get_cuda_device_count() > 0:
         try:
-            model = load_model("cuda", "float16")
+            result = transcribe("cuda", "float16")
         except Exception as exc:
-            print(f"warning: CUDA load failed ({exc}); falling back to CPU", file=sys.stderr)
-            model = load_model("cpu", "int8")
+            print(f"warning: CUDA transcription failed ({exc}); falling back to CPU", file=sys.stderr)
+            result = transcribe("cpu", "int8")
     else:
-        model = load_model("cpu", "int8")
-    segments, info = model.transcribe(
-        str(args.media.resolve()), language=args.language,
-        condition_on_previous_text=False, vad_filter=True,
-    )
-    result = {
-        "method": "local-asr",
-        "language": info.language,
-        "segments": [
-            {"start": segment.start, "end": segment.end, "text": segment.text.strip()}
-            for segment in segments
-        ],
-    }
+        result = transcribe("cpu", "int8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

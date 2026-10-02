@@ -29,6 +29,10 @@ Then run the helper with that environment's Python and the cached directory:
 
 The helper selects GPU float16 when CUDA is available, falls back to CPU INT8
 otherwise, and passes `local_files_only=True`.
+If CUDA fails while loading the model, starting transcription, or reading the
+segments, the helper restarts the whole transcription once on CPU INT8. It
+writes a warning to stderr and emits JSON only after all segments succeed.
+A CPU failure stops the helper without partial JSON.
 It does not use an API key, select a cloud backend, download a model during
 transcription, or open a player. It is not a network sandbox for arbitrary media
 or dependencies. Process only authorized files with current decoder packages.
