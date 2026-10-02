@@ -101,7 +101,13 @@ python -m unittest discover -s tests
 
 # Check helper CLI options
 python scripts/transcribe.py --help
+
+# Check documentation before delivery
+python3 scripts/documentation.py --check
 ```
+
+Run `python3 scripts/documentation.py --write` after documentation path changes.
+See [repository knowledge](docs/KB.md) for the gate's scope and test limits.
 
 For an integration check, run the helper against an authorized short speech sample and a cached model. Confirm nonempty, ordered timestamps and plausible words. Keep samples, models, outputs, and logs outside this repository.
 

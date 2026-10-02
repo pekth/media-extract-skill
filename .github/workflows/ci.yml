@@ -21,4 +21,5 @@ jobs:
       - name: Install
         run: pip install pytest
       - run: python -m compileall scripts tests
+      - run: python scripts/documentation.py --check
       - run: python -m pytest tests/ -q
