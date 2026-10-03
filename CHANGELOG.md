@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-03
+
+- Pin actions/checkout, actions/setup-python to verified v7 commit SHAs. Cancel obsolete runs for the same pull request or branch.
+
 ## Unreleased
 
 - Extend CUDA fallback to transcription and lazy segment generation. Restart
