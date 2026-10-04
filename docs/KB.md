@@ -43,3 +43,10 @@ mode on pull requests. See [ADR-0001](adr/0001-documentation-gate.md).
 - `docs/adr/0001-documentation-gate.md`
 - `references/local-transcription.md`
 <!-- documentation:end -->
+
+## CI workflow maintenance
+
+- [ci.yml](../.github/workflows/ci.yml) uses full-SHA v7 pins for `actions/checkout`, `actions/setup-python`. Application language versions and explicit cache settings are preserved.
+- Obsolete runs for the same pull request or branch are cancelled. Existing timeout caps are preserved.
+
+Reviewed base: `e3092132d2002c64ba074e339d93537c4d0204ce`. Source checks do not prove runtime, deployment or device behavior.
